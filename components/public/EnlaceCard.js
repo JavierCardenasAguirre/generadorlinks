@@ -4,10 +4,9 @@ export default function EnlaceCard({ enlace, href, variantClass = '' }) {
       href={href || enlace.url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`flex items-center gap-4 rounded-xl px-6 py-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg group ${variantClass}`}
+      className={`flex items-center justify-center gap-3 rounded-lg px-6 py-4 transition-all duration-200 hover:scale-105 hover:shadow-xl ${variantClass}`}
     >
-      <span className="flex-1 font-medium text-left">{enlace.titulo}</span>
-      <span className="text-sm opacity-70 group-hover:opacity-100">→</span>
+      <span className="flex-1 text-center font-semibold text-base">{enlace.titulo}</span>
     </a>
   )
 }

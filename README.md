@@ -1,4 +1,4 @@
-# Linktree Platform (refactor funcional)
+# Links Platform (refactor funcional)
 
 Proyecto web tipo Linktree con Next.js + Supabase.
 

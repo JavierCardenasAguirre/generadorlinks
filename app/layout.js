@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'LinkTree Platform',
+  title: 'Linkss Platform',
   description: 'Plataforma de enlaces personalizados',
 }
 

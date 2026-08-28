@@ -19,7 +19,7 @@ export default function NequiPayment({ clienteId, onSuccess, onCancel }) {
     const whatsappUrl = `https://wa.me/57${phoneNumber}?text=${encodeURIComponent(
       `Hola, ya realicé el pago de mi suscripción LinkTree.\n\nReferencia: ${reference}\nNombre: [Tu nombre]\nEmail: [Tu email]\n\nAdjunto comprobante.`
     )}`
-    
+    //gggg
     alert(message)
     window.open(whatsappUrl, '_blank')
     

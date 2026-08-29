@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function WhatsAppRedirect({ params, searchParams }) {
   const { phone } = params
@@ -17,11 +16,8 @@ export default function WhatsAppRedirect({ params, searchParams }) {
     const isTikTokBrowser = userAgent.includes('TikTok') || userAgent.includes('musical_ly')
     setIsTikTok(isTikTokBrowser)
 
-    // Si NO es TikTok, redirigir automáticamente
     if (!isTikTokBrowser) {
-      // Intentar deep link primero
       window.location.href = whatsappDeepLink
-      // Fallback a web después de 1 segundo
       setTimeout(() => {
         window.location.href = whatsappUrl
       }, 1000)
@@ -35,7 +31,6 @@ export default function WhatsAppRedirect({ params, searchParams }) {
   }
 
   const openInBrowser = () => {
-    // Para Android
     const intent = `intent://send?phone=${cleanPhone}&text=${encodeURIComponent(text)}#Intent;scheme=whatsapp;package=com.whatsapp;end`
     window.location.href = intent
   }
@@ -66,7 +61,7 @@ export default function WhatsAppRedirect({ params, searchParams }) {
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">2</span>
-                <span>Selecciona <strong>"Abrir en navegador"</strong> o <strong>"Abrir en Chrome/Safari"</strong></span>
+                <span>Selecciona <strong>Abrir en navegador</strong> o <strong>Abrir en Chrome/Safari</strong></span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold">3</span>
@@ -97,7 +92,6 @@ export default function WhatsAppRedirect({ params, searchParams }) {
     )
   }
 
-  // Si NO es TikTok, mostrar pantalla de carga
   return (
     <main className="min-h-screen bg-gradient-to-br from-green-600 via-green-500 to-emerald-600 flex items-center justify-center p-6">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center">
@@ -109,12 +103,12 @@ export default function WhatsAppRedirect({ params, searchParams }) {
         <h1 className="text-2xl font-bold text-gray-900 mb-3">
           Abriendo WhatsApp...
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           Si no se abre automáticamente, haz clic aquí:
         </p>
         <a
           href={whatsappUrl}
-          className="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg mt-4"
+          className="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg"
         >
           Abrir WhatsApp
         </a>

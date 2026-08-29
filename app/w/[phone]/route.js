@@ -4,18 +4,14 @@ export async function GET(request, { params }) {
   try {
     const { phone } = params
     const { searchParams } = new URL(request.url)
-    const text = searchParams.get('text') || ''
+    const text = searchParams.get('text') || 'Hola, me interesa tu producto'
     
-    // Limpiar el número: quitar +, espacios, guiones
+    // Limpiar el número
     const cleanPhone = phone.replace(/[\s\-+()]/g, '')
     
-    // Construir URL de WhatsApp
-    let whatsappUrl = `https://wa.me/${cleanPhone}`
-    if (text) {
-      whatsappUrl += `?text=${encodeURIComponent(text)}`
-    }
+    // Formato compatible con TikTok/Instagram
+    const whatsappUrl = `https://api.whatsapp.com/send/?phone=${cleanPhone}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`
     
-    // Redirección directa
     return NextResponse.redirect(whatsappUrl, 307)
   } catch (error) {
     return NextResponse.redirect(new URL('/', request.url))

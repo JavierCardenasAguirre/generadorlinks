@@ -11,7 +11,7 @@ export default function UserDashboard() {
   const [saving, setSaving] = useState(false)
   const [data, setData] = useState(null)
   const [origin, setOrigin] = useState('')
-  const [profile, setProfile] = useState({ nombre: '', bio: '', avatar_url: '', template: 'aurora' })
+  const [profile, setProfile] = useState({ nombre: '', bio: '', avatar_url: '', template: 'neonPulse' })
   const [newLink, setNewLink] = useState(initialLink)
 
   const fetchMe = async () => {
@@ -25,7 +25,7 @@ export default function UserDashboard() {
         nombre: payload.user.nombre || '',
         bio: payload.user.bio || '',
         avatar_url: payload.user.avatar_url || '',
-        template: payload.user.template || 'aurora'
+        template: payload.user.template || 'neonPulse'
       })
     } catch (error) {
       toast.error(error.message)
@@ -41,11 +41,25 @@ export default function UserDashboard() {
   }, [])
 
   const subscriptionText = useMemo(() => {
-    const sub = data?.subscription
-    if (!sub) return 'Sin suscripción registrada'
+    if (!data?.subscription) return 'Sin suscripción registrada'
+
+    if (data.user.lifetime_access) {
+      return 'Licencia vitalicia activa por decisión del administrador'
+    }
+
+    if (!data.user.billing_enabled) {
+      return 'Cobro deshabilitado por el administrador (acceso activo sin vencimiento)'
+    }
+
+    const sub = data.subscription
     if (sub.status === 'trial') return `Prueba gratuita hasta ${new Date(sub.trial_ends_at).toLocaleDateString()}`
-    if (sub.status === 'active') return `Activa hasta ${new Date(sub.current_period_ends_at).toLocaleDateString()}`
+    if (sub.status === 'active' && sub.current_period_ends_at) return `Activa hasta ${new Date(sub.current_period_ends_at).toLocaleDateString()}`
     return 'Pago pendiente ($3/mes)'
+  }, [data])
+
+  const canUserPay = useMemo(() => {
+    if (!data) return false
+    return data.user.billing_enabled && !data.user.lifetime_access
   }, [data])
 
   const saveProfile = async () => {
@@ -139,9 +153,11 @@ export default function UserDashboard() {
             <p className="text-sm mt-2">Tu URL pública: <a className="text-blue-600" href={publicUrl} target="_blank" rel="noreferrer">{publicUrl}</a></p>
           </div>
           <div className="flex gap-2">
-            <button onClick={activateSubscription} disabled={saving} className="px-4 py-2 bg-green-600 text-white rounded-lg">
-              Activar plan $3/mes
-            </button>
+            {canUserPay && (
+              <button onClick={activateSubscription} disabled={saving} className="px-4 py-2 bg-green-600 text-white rounded-lg">
+                Activar plan $3/mes
+              </button>
+            )}
             {data.user.role === 'admin' && (
               <a href="/admin" className="px-4 py-2 bg-indigo-600 text-white rounded-lg">Panel admin</a>
             )}

@@ -33,15 +33,15 @@ export default async function PublicProfilePage({ params }) {
             <img
               src={user.avatar_url}
               alt={`Avatar de ${user.nombre}`}
-              className="w-24 h-24 rounded-full mx-auto object-cover mb-4 border-4 border-white/30"
+              className="w-24 h-24 rounded-full mx-auto object-cover mb-4 border-4 border-white/40 shadow-xl"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 flex items-center justify-center text-2xl font-bold">
+            <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl font-bold shadow-xl">
               {user.nombre?.slice(0, 1)?.toUpperCase()}
             </div>
           )}
-          <h1 className="text-3xl font-bold">{user.nombre}</h1>
-          {user.bio && <p className="mt-2 opacity-90">{user.bio}</p>}
+          <h1 className="text-4xl font-extrabold drop-shadow-md">{user.nombre}</h1>
+          {user.bio && <p className="mt-2 opacity-95 drop-shadow-sm">{user.bio}</p>}
         </div>
 
         <div className="space-y-3">

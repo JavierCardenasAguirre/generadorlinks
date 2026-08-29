@@ -9,7 +9,7 @@ export async function GET() {
 
     const { data, error } = await supabaseAdmin
       .from('usuarios')
-      .select('id, nombre, email, role, approved, slug, created_at')
+      .select('id, nombre, email, role, approved, slug, billing_enabled, lifetime_access, created_at')
       .order('created_at', { ascending: false })
 
     if (error) throw error

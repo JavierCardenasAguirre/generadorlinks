@@ -7,6 +7,18 @@ export async function POST() {
     const user = await requireUser()
     if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
+    if (user.lifetime_access) {
+      return NextResponse.json({
+        error: 'Tu cuenta tiene acceso vitalicio habilitado por el administrador. No necesitas pagar.'
+      }, { status: 400 })
+    }
+
+    if (!user.billing_enabled) {
+      return NextResponse.json({
+        error: 'El administrador deshabilitó temporalmente los pagos para tu cuenta.'
+      }, { status: 403 })
+    }
+
     const now = new Date()
     const nextBilling = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()
 

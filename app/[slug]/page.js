@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation'
 import { supabaseAdmin } from '@/lib/supabase/admin'
-import { TEMPLATE_PRESETS, DEFAULT_TEMPLATE } from '@/lib/templates'
 import EnlaceCard from '@/components/public/EnlaceCard'
-import AvatarImage from '@/components/public/AvatarImage'
 
 export default async function PublicProfilePage({ params }) {
   const { slug } = params
@@ -24,24 +22,33 @@ export default async function PublicProfilePage({ params }) {
     .eq('estado', true)
     .order('orden', { ascending: true })
 
-  const templateKey = user.template && TEMPLATE_PRESETS[user.template] ? user.template : DEFAULT_TEMPLATE
-  const template = TEMPLATE_PRESETS[templateKey]
+  // TEMPLATE FORZADO - siempre rosa
+  const containerClasses = 'min-h-screen bg-gradient-to-br from-pink-600 via-fuchsia-600 to-purple-700 text-white p-6'
+  const cardClasses = 'bg-white hover:bg-gray-50 text-gray-900 font-semibold shadow-[0_8px_30px_rgba(0,0,0,0.4)] border-4 border-black/20'
 
   return (
-    <main className={`${template.container} min-h-screen p-6`}>
+    <main className={containerClasses}>
       <div className="max-w-xl mx-auto py-10">
         <div className="text-center mb-8">
-          <AvatarImage 
-            src={user.avatar_url} 
-            nombre={user.nombre} 
-          />
+          {user.avatar_url ? (
+            <img
+              src={user.avatar_url}
+              alt={user.nombre}
+              className="w-28 h-28 rounded-full mx-auto object-cover mb-4 border-4 border-white shadow-2xl"
+              onError={(e) => { e.target.style.display = 'none' }}
+            />
+          ) : null}
           
-          <h1 className="text-5xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] mb-4">
+          <div className="w-28 h-28 rounded-full mx-auto mb-4 bg-white flex items-center justify-center text-5xl font-bold shadow-2xl border-4 border-white text-pink-600" style={{ display: user.avatar_url ? 'none' : 'flex' }}>
+            {user.nombre?.slice(0, 1)?.toUpperCase()}
+          </div>
+          
+          <h1 className="text-5xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] mb-4">
             {user.nombre}
           </h1>
           
           {user.bio && (
-            <p className="mt-3 text-xl font-semibold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] max-w-lg mx-auto leading-relaxed px-4">
+            <p className="mt-3 text-xl font-bold text-white drop-shadow-[0_3px_8px_rgba(0,0,0,0.9)] max-w-lg mx-auto leading-relaxed px-4">
               {user.bio}
             </p>
           )}
@@ -49,7 +56,7 @@ export default async function PublicProfilePage({ params }) {
 
         <div className="space-y-4 mt-10">
           {(links || []).map((link) => (
-            <EnlaceCard key={link.id} enlace={link} href={`/r/${link.id}`} variantClass={template.card} />
+            <EnlaceCard key={link.id} enlace={link} href={`/r/${link.id}`} variantClass={cardClasses} />
           ))}
         </div>
       </div>

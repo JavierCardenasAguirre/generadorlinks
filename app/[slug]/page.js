@@ -23,7 +23,7 @@ export default async function PublicProfilePage({ params }) {
     .eq('estado', true)
     .order('orden', { ascending: true })
 
-  // Siempre usar pinkCases si no hay template o es inválido
+  // Siempre usar pinkCases si no hay template válido
   const templateKey = user.template && TEMPLATE_PRESETS[user.template] ? user.template : DEFAULT_TEMPLATE
   const template = TEMPLATE_PRESETS[templateKey]
 
@@ -36,18 +36,12 @@ export default async function PublicProfilePage({ params }) {
               src={user.avatar_url}
               alt={user.nombre}
               className="w-28 h-28 rounded-full mx-auto object-cover mb-4 border-4 border-white shadow-2xl"
-              onError={(e) => {
-                e.target.style.display = 'none'
-                e.target.nextSibling.style.display = 'flex'
-              }}
             />
-          ) : null}
-          <div 
-            className="w-28 h-28 rounded-full mx-auto mb-4 bg-white flex items-center justify-center text-4xl font-bold shadow-2xl border-4 border-white text-pink-600"
-            style={{ display: user.avatar_url ? 'none' : 'flex' }}
-          >
-            {user.nombre?.slice(0, 1)?.toUpperCase()}
-          </div>
+          ) : (
+            <div className="w-28 h-28 rounded-full mx-auto mb-4 bg-white flex items-center justify-center text-4xl font-bold shadow-2xl border-4 border-white text-pink-600">
+              {user.nombre?.slice(0, 1)?.toUpperCase()}
+            </div>
+          )}
           
           <h1 className="text-5xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] mb-4">
             {user.nombre}

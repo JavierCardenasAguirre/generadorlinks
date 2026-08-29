@@ -1,281 +1,214 @@
-'use client'
+'use client';
+import { useState, useEffect } from 'react';
 
-import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase/client'
-import toast from 'react-hot-toast'
-import { 
-  FaPlus, FaTrash, FaEdit, FaGripVertical,
-  FaWhatsapp, FaInstagram, FaTiktok, FaFacebook,
-  FaGlobe, FaStore, FaCalendarCheck, FaYoutube,
-  FaLinkedin, FaTwitter, FaPinterest, FaSpotify
-} from 'react-icons/fa'
+export default function EnlaceManager({ userId }) {
+  const [enlaces, setEnlaces] = useState([]);
+  const [nuevoEnlace, setNuevoEnlace] = useState({ titulo: '', url: '' });
+  const [editando, setEditando] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-const iconOptions = [
-  { value: 'whatsapp', label: 'WhatsApp', icon: FaWhatsapp },
-  { value: 'instagram', label: 'Instagram', icon: FaInstagram },
-  { value: 'tiktok', label: 'TikTok', icon: FaTiktok },
-  { value: 'facebook', label: 'Facebook', icon: FaFacebook },
-  { value: 'web', label: 'Sitio Web', icon: FaGlobe },
-  { value: 'tienda', label: 'Tienda', icon: FaStore },
-  { value: 'reservas', label: 'Reservas', icon: FaCalendarCheck },
-  { value: 'youtube', label: 'YouTube', icon: FaYoutube },
-  { value: 'linkedin', label: 'LinkedIn', icon: FaLinkedin },
-  { value: 'twitter', label: 'Twitter', icon: FaTwitter },
-  { value: 'pinterest', label: 'Pinterest', icon: FaPinterest },
-  { value: 'spotify', label: 'Spotify', icon: FaSpotify },
-]
-
-export default function EnlaceManager({ clienteId }) {
-  const [enlaces, setEnlaces] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [formData, setFormData] = useState({
-    titulo: '',
-    url: '',
-    tipo: 'web',
-    estado: true
-  })
-  
   useEffect(() => {
-    fetchEnlaces()
-  }, [clienteId])
-  
-  const fetchEnlaces = async () => {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from('enlaces')
-      .select('*')
-      .eq('cliente_id', clienteId)
-      .order('orden', { ascending: true })
-    
-    if (error) {
-      toast.error('Error al cargar enlaces')
-    } else {
-      setEnlaces(data || [])
-    }
-    setLoading(false)
-  }
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    
+    cargarEnlaces();
+  }, [userId]);
+
+  const cargarEnlaces = async () => {
     try {
-      const data = {
-        ...formData,
-        cliente_id: clienteId,
-        orden: enlaces.length
+      const response = await fetch(`/api/admin/users/${userId}/enlaces`);
+      if (response.ok) {
+        const data = await response.json();
+        setEnlaces(data);
       }
-      
-      if (editing) {
-        const { error } = await supabase
-          .from('enlaces')
-          .update(data)
-          .eq('id', editing.id)
-        
-        if (error) throw error
-        toast.success('Enlace actualizado')
-      } else {
-        const { error } = await supabase
-          .from('enlaces')
-          .insert([data])
-        
-        if (error) throw error
-        toast.success('Enlace creado')
-      }
-      
-      resetForm()
-      fetchEnlaces()
     } catch (error) {
-      toast.error(error.message || 'Error al guardar enlace')
+      console.error('Error al cargar enlaces:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-  
-  const handleDelete = async (id) => {
-    if (!confirm('¿Estás seguro de eliminar este enlace?')) return
-    
-    const { error } = await supabase
-      .from('enlaces')
-      .delete()
-      .eq('id', id)
-    
-    if (error) {
-      toast.error('Error al eliminar enlace')
-    } else {
-      toast.success('Enlace eliminado')
-      fetchEnlaces()
+  };
+
+  const agregarEnlace = async () => {
+    if (!nuevoEnlace.titulo || !nuevoEnlace.url) {
+      alert('Por favor completa título y URL');
+      return;
     }
-  }
-  
-  const resetForm = () => {
-    setShowForm(false)
-    setEditing(null)
-    setFormData({
-      titulo: '',
-      url: '',
-      tipo: 'web',
-      estado: true
-    })
-  }
-  
-  const handleEdit = (enlace) => {
-    setEditing(enlace)
-    setFormData({
-      titulo: enlace.titulo,
-      url: enlace.url,
-      tipo: enlace.tipo || 'web',
-      estado: enlace.estado
-    })
-    setShowForm(true)
-  }
-  
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/enlaces`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nuevoEnlace),
+      });
+
+      if (response.ok) {
+        setNuevoEnlace({ titulo: '', url: '' });
+        cargarEnlaces();
+      }
+    } catch (error) {
+      console.error('Error al agregar enlace:', error);
+    }
+  };
+
+  const actualizarEnlace = async (enlaceId) => {
+    if (!editando.titulo || !editando.url) {
+      alert('Por favor completa título y URL');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/enlaces`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          enlaceId,
+          titulo: editando.titulo,
+          url: editando.url,
+        }),
+      });
+
+      if (response.ok) {
+        setEditando(null);
+        cargarEnlaces();
+      }
+    } catch (error) {
+      console.error('Error al actualizar enlace:', error);
+    }
+  };
+
+  const eliminarEnlace = async (enlaceId) => {
+    if (!confirm('¿Eliminar este enlace?')) return;
+
+    try {
+      const response = await fetch(`/api/admin/users/${userId}/enlaces`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enlaceId }),
+      });
+
+      if (response.ok) {
+        cargarEnlaces();
+      }
+    } catch (error) {
+      console.error('Error al eliminar enlace:', error);
+    }
+  };
+
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-32">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    )
+    return <div className="text-center py-4">Cargando enlaces...</div>;
   }
-  
+
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {enlaces.length} Enlaces
-        </h3>
+    <div className="space-y-6">
+      <h3 className="text-xl font-bold">Enlaces</h3>
+
+      {/* Formulario para agregar nuevo enlace */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="Título"
+          value={nuevoEnlace.titulo}
+          onChange={(e) =>
+            setNuevoEnlace({ ...nuevoEnlace, titulo: e.target.value })
+          }
+          className="flex-1 px-3 py-2 border rounded-lg"
+        />
+        <input
+          type="url"
+          placeholder="https://..."
+          value={nuevoEnlace.url}
+          onChange={(e) =>
+            setNuevoEnlace({ ...nuevoEnlace, url: e.target.value })
+          }
+          className="flex-1 px-3 py-2 border rounded-lg"
+        />
         <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          onClick={agregarEnlace}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
-          <FaPlus /> {showForm ? 'Cancelar' : 'Agregar Enlace'}
+          Agregar
         </button>
       </div>
-      
-      {showForm && (
-        <div className="bg-gray-50 rounded-lg p-6 mb-6 border border-gray-200">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Título *</label>
-              <input
-                type="text"
-                value={formData.titulo}
-                onChange={(e) => setFormData({...formData, titulo: e.target.value})}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
-                placeholder="Ej: Sígueme en Instagram"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">URL *</label>
-              <input
-                type="url"
-                value={formData.url}
-                onChange={(e) => setFormData({...formData, url: e.target.value})}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                required
-                placeholder="https://..."
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Enlace</label>
-              <select
-                value={formData.tipo}
-                onChange={(e) => setFormData({...formData, tipo: e.target.value})}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                {iconOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={formData.estado}
-                onChange={(e) => setFormData({...formData, estado: e.target.checked})}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label className="ml-2 text-sm text-gray-700">Activo</label>
-            </div>
-            
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-              >
-                {loading ? 'Guardando...' : editing ? 'Actualizar' : 'Crear'}
-              </button>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-      
-      <div className="space-y-2">
-        {enlaces.map((enlace, index) => {
-          const Icon = iconOptions.find(opt => opt.value === enlace.tipo)?.icon || FaGlobe
-          return (
-            <div
-              key={enlace.id}
-              className="flex items-center gap-4 bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-            >
-              <div className="cursor-move text-gray-400">
-                <FaGripVertical />
-              </div>
-              <div className="flex-1 flex items-center gap-3">
-                <Icon className="text-xl text-blue-600" />
-                <div>
-                  <p className="font-medium text-gray-900">{enlace.titulo}</p>
-                  <p className="text-sm text-gray-500 truncate max-w-md">{enlace.url}</p>
+
+      {/* Lista de enlaces */}
+      <div className="space-y-3">
+        {enlaces.map((enlace) => (
+          <div
+            key={enlace.id}
+            className="border rounded-lg p-4 bg-white shadow-sm"
+          >
+            {editando?.id === enlace.id ? (
+              // Modo edición
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  value={editando.titulo}
+                  onChange={(e) =>
+                    setEditando({ ...editando, titulo: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border rounded-lg"
+                  placeholder="Título"
+                />
+                <input
+                  type="url"
+                  value={editando.url}
+                  onChange={(e) =>
+                    setEditando({ ...editando, url: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border rounded-lg"
+                  placeholder="https://..."
+                />
+                <div className="flex gap-2 justify-end">
+                  <button
+                    onClick={() => setEditando(null)}
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => actualizarEnlace(enlace.id)}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    Guardar
+                  </button>
                 </div>
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  enlace.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {enlace.estado ? 'Activo' : 'Inactivo'}
-                </span>
-                <span className="text-xs text-gray-400">#{index + 1}</span>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(enlace)}
-                  className="text-blue-600 hover:text-blue-700 p-1"
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => handleDelete(enlace.id)}
-                  className="text-red-600 hover:text-red-700 p-1"
-                >
-                  <FaTrash />
-                </button>
+            ) : (
+              // Modo vista
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">{enlace.titulo}</h4>
+                  <a
+                    href={enlace.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-blue-600 hover:underline break-all"
+                  >
+                    {enlace.url}
+                  </a>
+                </div>
+                <div className="flex gap-2 ml-4">
+                  <button
+                    onClick={() => setEditando(enlace)}
+                    className="px-3 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => eliminarEnlace(enlace.id)}
+                    className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded"
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
-            </div>
-          )
-        })}
-        
-        {enlaces.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <p className="text-4xl mb-2">🔗</p>
-            <p>No hay enlaces aún</p>
-            <p className="text-sm">Agrega tu primer enlace para empezar</p>
+            )}
           </div>
+        ))}
+
+        {enlaces.length === 0 && (
+          <p className="text-center text-gray-500 py-8">
+            No hay enlaces aún. Agrega el primero arriba.
+          </p>
         )}
       </div>
     </div>
-  )
+  );
 }

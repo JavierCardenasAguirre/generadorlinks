@@ -23,7 +23,11 @@ export default async function PublicProfilePage({ params }) {
     .eq('estado', true)
     .order('orden', { ascending: true })
 
-  const template = TEMPLATE_PRESETS[user.template] || TEMPLATE_PRESETS[DEFAULT_TEMPLATE]
+  // Siempre asegurar que haya un template válido
+  let template = TEMPLATE_PRESETS[user.template]
+  if (!template) {
+    template = TEMPLATE_PRESETS[DEFAULT_TEMPLATE]
+  }
 
   return (
     <main className={`${template.container} p-6`}>
@@ -36,12 +40,16 @@ export default async function PublicProfilePage({ params }) {
               className="w-24 h-24 rounded-full mx-auto object-cover mb-4 border-4 border-white/40 shadow-xl"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl font-bold shadow-xl">
+            <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl font-bold shadow-xl border-2 border-white/30">
               {user.nombre?.slice(0, 1)?.toUpperCase()}
             </div>
           )}
-          <h1 className="text-4xl font-extrabold drop-shadow-md">{user.nombre}</h1>
-          {user.bio && <p className="mt-2 opacity-95 drop-shadow-sm">{user.bio}</p>}
+          <h1 className="text-4xl font-extrabold drop-shadow-lg mb-3">{user.nombre}</h1>
+          {user.bio && (
+            <p className="mt-2 text-lg opacity-95 drop-shadow-sm max-w-md mx-auto leading-relaxed">
+              {user.bio}
+            </p>
+          )}
         </div>
 
         <div className="space-y-3">

@@ -23,36 +23,44 @@ export default async function PublicProfilePage({ params }) {
     .eq('estado', true)
     .order('orden', { ascending: true })
 
-  // Siempre asegurar que haya un template válido
-  let template = TEMPLATE_PRESETS[user.template]
-  if (!template) {
-    template = TEMPLATE_PRESETS[DEFAULT_TEMPLATE]
-  }
+  // Siempre usar pinkCases si no hay template o es inválido
+  const templateKey = user.template && TEMPLATE_PRESETS[user.template] ? user.template : DEFAULT_TEMPLATE
+  const template = TEMPLATE_PRESETS[templateKey]
 
   return (
-    <main className={`${template.container} p-6`}>
+    <main className={`${template.container} min-h-screen p-6`}>
       <div className="max-w-xl mx-auto py-10">
         <div className="text-center mb-8">
           {user.avatar_url ? (
             <img
               src={user.avatar_url}
-              alt={`Avatar de ${user.nombre}`}
-              className="w-24 h-24 rounded-full mx-auto object-cover mb-4 border-4 border-white/40 shadow-xl"
+              alt={user.nombre}
+              className="w-28 h-28 rounded-full mx-auto object-cover mb-4 border-4 border-white shadow-2xl"
+              onError={(e) => {
+                e.target.style.display = 'none'
+                e.target.nextSibling.style.display = 'flex'
+              }}
             />
-          ) : (
-            <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl font-bold shadow-xl border-2 border-white/30">
-              {user.nombre?.slice(0, 1)?.toUpperCase()}
-            </div>
-          )}
-          <h1 className="text-4xl font-extrabold drop-shadow-lg mb-3">{user.nombre}</h1>
+          ) : null}
+          <div 
+            className="w-28 h-28 rounded-full mx-auto mb-4 bg-white flex items-center justify-center text-4xl font-bold shadow-2xl border-4 border-white text-pink-600"
+            style={{ display: user.avatar_url ? 'none' : 'flex' }}
+          >
+            {user.nombre?.slice(0, 1)?.toUpperCase()}
+          </div>
+          
+          <h1 className="text-5xl font-extrabold text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)] mb-4">
+            {user.nombre}
+          </h1>
+          
           {user.bio && (
-            <p className="mt-2 text-lg opacity-95 drop-shadow-sm max-w-md mx-auto leading-relaxed">
+            <p className="mt-3 text-xl font-semibold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)] max-w-lg mx-auto leading-relaxed px-4">
               {user.bio}
             </p>
           )}
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4 mt-10">
           {(links || []).map((link) => (
             <EnlaceCard key={link.id} enlace={link} href={`/r/${link.id}`} variantClass={template.card} />
           ))}

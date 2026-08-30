@@ -66,53 +66,54 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
         position: 'relative'
       }}>
 
-        {/* Círculo rojo pulsante GRANDE arriba a la derecha */}
+        {/* Círculo amarillo pulsante GRANDE arriba a la derecha - MUY ARRIBA */}
         <div style={{
           position: 'fixed',
-          top: '8px',
-          right: '8px',
-          width: '80px',
-          height: '80px',
-          background: 'rgba(255,255,255,0.3)',
+          top: '2px',
+          right: '2px',
+          width: '90px',
+          height: '90px',
+          background: 'rgba(255,255,0,0.4)',
           borderRadius: '50%',
-          border: '6px solid #fff',
+          border: '8px solid #ffff00',
           animation: 'pulse 1s infinite',
           zIndex: 9999,
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          boxShadow: '0 0 30px rgba(255,255,0,0.8)'
         }} />
 
-        {/* Flecha apuntando arriba derecha MÁS GRANDE */}
+        {/* Flecha blanca GRANDE apuntando arriba derecha */}
         <div style={{
           position: 'fixed',
-          top: '95px',
-          right: '25px',
-          fontSize: '64px',
+          top: '105px',
+          right: '30px',
+          fontSize: '70px',
           color: '#fff',
           animation: 'bounce 0.8s infinite',
           zIndex: 9998,
           pointerEvents: 'none',
-          textShadow: '0 4px 12px rgba(0,0,0,0.8)',
+          textShadow: '0 4px 16px rgba(0,0,0,1)',
           transform: 'rotate(-45deg)',
           fontWeight: '900'
         }}>
           ↑
         </div>
 
-        {/* Texto AQUÍ */}
+        {/* Texto AQUÍ con flecha */}
         <div style={{
           position: 'fixed',
-          top: '175px',
-          right: '15px',
-          background: '#fff',
-          color: '#ff0000',
-          padding: '12px 16px',
-          borderRadius: '12px',
+          top: '195px',
+          right: '10px',
+          background: '#ffff00',
+          color: '#000',
+          padding: '14px 18px',
+          borderRadius: '14px',
           fontWeight: '900',
-          fontSize: '16px',
+          fontSize: '18px',
           zIndex: 9997,
           pointerEvents: 'none',
-          boxShadow: '0 6px 16px rgba(0,0,0,0.6)',
-          border: '3px solid #ff0000'
+          boxShadow: '0 6px 20px rgba(0,0,0,0.8)',
+          border: '4px solid #fff'
         }}>
           AQUÍ ↗️
         </div>
@@ -162,11 +163,11 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
             textAlign: 'left'
           }}>
             <p style={{ fontSize: '18px', fontWeight: '900', color: '#ff0000', margin: '0 0 16px', textAlign: 'center' }}>
-              Toca los 3 puntos arriba ↗️
+              Toca la esquina arriba ↗️
             </p>
             <div style={{ background: '#fff', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
               <p style={{ margin: 0, fontSize: '16px', color: '#111', lineHeight: '1.6', fontWeight: '700' }}>
-                1️⃣ Busca los <strong style={{color:'#ff0000', fontSize:'18px'}}>tres puntos (...)</strong> en la esquina superior derecha
+                1️⃣ Toca la <strong style={{color:'#ff0000', fontSize:'18px'}}>esquina superior derecha</strong> donde está el círculo amarillo (aunque NO veas los 3 puntos, están ahí)
               </p>
             </div>
             <div style={{ background: '#fff', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>

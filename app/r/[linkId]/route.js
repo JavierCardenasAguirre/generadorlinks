@@ -5,7 +5,6 @@ function extractWhatsAppTarget(rawUrl) {
   try {
     const parsed = new URL(rawUrl)
     const host = parsed.hostname.toLowerCase()
-
     let phone = ''
     let text = parsed.searchParams.get('text') || ''
 
@@ -18,7 +17,6 @@ function extractWhatsAppTarget(rawUrl) {
       if (phoneFromQuery) {
         phone = phoneFromQuery.replace(/\D/g, '')
       }
-
       if (!text) {
         text = parsed.searchParams.get('text') || ''
       }
@@ -48,6 +46,7 @@ export async function GET(request, { params }) {
       return NextResponse.redirect(new URL('/', request.url))
     }
 
+    // Registrar el clic
     const forwardedFor = request.headers.get('x-forwarded-for')
     const ip = forwardedFor ? forwardedFor.split(',')[0].trim() : null
     const userAgent = request.headers.get('user-agent') || 'unknown'
@@ -61,11 +60,22 @@ export async function GET(request, { params }) {
     })
 
     const waTarget = extractWhatsAppTarget(link.url)
+
     if (waTarget) {
+      // Agregar un parámetro para detectar si viene de TikTok
       const destination = new URL(`/w/${waTarget.phone}`, request.url)
+      
+      // Mantener el texto del mensaje
       if (waTarget.text) {
         destination.searchParams.set('text', waTarget.text)
       }
+
+      // Agregar parámetro para detectar el origen
+      const userAgentCheck = userAgent.toLowerCase()
+      if (userAgentCheck.includes('tiktok')) {
+        destination.searchParams.set('from', 'tiktok')
+      }
+
       return NextResponse.redirect(destination)
     }
 

@@ -153,7 +153,7 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
 
         <div className="mt-5 rounded-xl bg-amber-50 border border-amber-300 p-3 text-left text-sm text-amber-900">
           <p className="font-bold mb-1">📱 Si vienes desde TikTok</p>
-          <p className="mb-2">Usa el botón <span className="font-bold">"Abrir con API"</span> o el botón principal (funciona automáticamente).</p>
+          <p className="mb-2">Usa el botón <span className="font-bold">&quot;Abrir con API&quot;</span> o el botón principal (funciona automáticamente).</p>
           <ol className="list-decimal ml-5 space-y-1">
             <li>Toca el botón verde o azul para abrir WhatsApp</li>
             <li>Si no funciona, copia el enlace y pégalo en tu navegador</li>

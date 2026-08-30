@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 
 function sanitizePhone(value) {
   return String(value || '').replace(/\D/g, '')
@@ -10,160 +10,186 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
   const phone = sanitizePhone(params?.phone)
   const message = searchParams?.text || 'Hola, me interesa tu producto'
   const [copied, setCopied] = useState(false)
-  const [isTikTok, setIsTikTok] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    // Detectar si es TikTok
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera
-    const isTikTokWebView = /TikTok/i.test(userAgent) || document.referrer?.includes('tiktok')
-    setIsTikTok(isTikTokWebView)
-
-    // Detectar si es móvil
-    const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(userAgent)
-    setIsMobile(isMobileDevice)
-
-    // Si es TikTok, intentar abrir directamente después de un pequeño delay
-    if (isTikTokWebView && isMobileDevice) {
-      setTimeout(() => {
-        // Primero intentar con WhatsApp API (funciona en TikTok)
-        const encodedText = encodeURIComponent(message)
-        const apiUrl = `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedText}&type=phone_number&app_absent=0`
-        window.location.href = apiUrl
-      }, 100)
-    }
-  }, [phone, message])
+  const [copiedNum, setCopiedNum] = useState(false)
 
   const links = useMemo(() => {
     const encodedText = encodeURIComponent(message)
     const waMe = `https://wa.me/${phone}?text=${encodedText}`
-    const apiUrl = `https://api.whatsapp.com/send/?phone=${phone}&text=${encodedText}&type=phone_number&app_absent=0`
-    const schemeUrl = `whatsapp://send?phone=${phone}&text=${encodedText}`
-    const intentUrl = `intent://send?phone=${phone}&text=${encodedText}#Intent;scheme=whatsapp;package=com.whatsapp;S.browser_fallback_url=${encodeURIComponent(waMe)};end`
-    const fallbackUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedText}`
-    
-    return { waMe, apiUrl, schemeUrl, intentUrl, fallbackUrl }
+    return { waMe }
   }, [phone, message])
 
-  const copyFallback = async () => {
+  const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(links.waMe)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (_err) {
-      setCopied(false)
-    }
+      setTimeout(() => setCopied(false), 2500)
+    } catch (_) { setCopied(false) }
   }
 
-  // Función mejorada para abrir WhatsApp
-  const openWhatsApp = () => {
-    // Si es TikTok, usar la URL de la API que funciona mejor
-    if (isTikTok) {
-      window.location.href = links.apiUrl
-      return
-    }
-
-    // En Android, intentar con intent primero
-    if (/Android/i.test(navigator.userAgent)) {
-      // Intentar abrir con intent
-      const intentLink = links.intentUrl
-      window.location.href = intentLink
-
-      // Fallback después de 2 segundos si no se abrió
-      setTimeout(() => {
-        // Si la página sigue visible, usar el fallback
-        if (!document.hidden) {
-          window.location.href = links.apiUrl
-        }
-      }, 2000)
-      return
-    }
-
-    // En iOS, usar scheme primero
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      window.location.href = links.schemeUrl
-      setTimeout(() => {
-        if (!document.hidden) {
-          window.location.href = links.apiUrl
-        }
-      }, 2000)
-      return
-    }
-
-    // En desktop, abrir con API
-    window.open(links.apiUrl, '_blank')
+  const copyNum = async () => {
+    try {
+      await navigator.clipboard.writeText('+' + phone)
+      setCopiedNum(true)
+      setTimeout(() => setCopiedNum(false), 2500)
+    } catch (_) { setCopiedNum(false) }
   }
 
-  // Función específica para TikTok
-  const openForTikTok = () => {
-    window.location.href = links.apiUrl
-  }
-
-  if (!phone) {
-    return (
-      <main className="min-h-screen grid place-items-center bg-slate-950 text-white p-6">
-        <div className="max-w-md w-full rounded-2xl bg-white/10 border border-white/20 p-6 text-center">
-          <h1 className="text-2xl font-bold mb-2">Enlace inválido</h1>
-          <p className="text-white/85">No se encontró un número de WhatsApp válido.</p>
-        </div>
-      </main>
-    )
-  }
+  if (!phone) return null
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 flex items-center justify-center p-6">
-      <div className="max-w-md w-full rounded-3xl bg-white p-7 shadow-2xl text-center">
-        <h1 className="text-2xl font-extrabold text-slate-900 mb-2">Contactar por WhatsApp</h1>
-        <p className="text-slate-600 mb-5">Toca el botón principal para abrir el chat.</p>
-        
-        {/* Botón principal mejorado */}
-        <button 
-          onClick={openWhatsApp}
-          className="block w-full rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-4 text-lg shadow-lg transition-colors"
-        >
-          {isTikTok ? 'Abrir en WhatsApp (TikTok)' : 'Abrir WhatsApp'}
-        </button>
+    <main style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg,#075e54,#128c7e,#25d366)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '24px',
+      fontFamily: 'system-ui,-apple-system,sans-serif'
+    }}>
+      <div style={{
+        background: '#fff',
+        borderRadius: '28px',
+        padding: '32px 24px',
+        maxWidth: '390px',
+        width: '100%',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
+        textAlign: 'center'
+      }}>
 
-        {/* Botón especial para TikTok */}
-        {isTikTok && (
-          <button 
-            onClick={openForTikTok}
-            className="block w-full rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 mt-3 transition-colors"
+        <div style={{
+          width: '80px', height: '80px',
+          background: '#25d366', borderRadius: '50%',
+          margin: '0 auto 20px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 8px 24px rgba(37,211,102,0.45)'
+        }}>
+          <svg width="46" height="46" fill="white" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>
+        </div>
+
+        <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#111', margin: '0 0 4px' }}>
+          Contactar por WhatsApp
+        </h1>
+        <p style={{ fontSize: '14px', color: '#666', margin: '0 0 24px' }}>
+          Sigue los pasos segun donde estes:
+        </p>
+
+        <div style={{
+          background: '#fff8e1',
+          border: '2px solid #ffc107',
+          borderRadius: '16px',
+          padding: '18px 16px',
+          marginBottom: '16px',
+          textAlign: 'left'
+        }}>
+          <p style={{ fontWeight: '800', fontSize: '15px', color: '#333', margin: '0 0 10px' }}>
+            📱 Si estas en TikTok:
+          </p>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
+            <span style={{ background: '#ffc107', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '13px', flexShrink: 0 }}>1</span>
+            <p style={{ margin: 0, fontSize: '14px', color: '#444', lineHeight: '1.5' }}>
+              Toca los <strong>3 puntos ( ... )</strong> arriba a la derecha
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
+            <span style={{ background: '#ffc107', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '13px', flexShrink: 0 }}>2</span>
+            <p style={{ margin: 0, fontSize: '14px', color: '#444', lineHeight: '1.5' }}>
+              Selecciona <strong>Abrir en navegador</strong>
+            </p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <span style={{ background: '#ffc107', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '13px', flexShrink: 0 }}>3</span>
+            <p style={{ margin: 0, fontSize: '14px', color: '#444', lineHeight: '1.5' }}>
+              Ahi si presiona el boton verde y abrira WhatsApp
+            </p>
+          </div>
+        </div>
+
+        <div style={{
+          background: '#f0fdf4',
+          border: '2px solid #25d366',
+          borderRadius: '16px',
+          padding: '18px 16px',
+          marginBottom: '20px',
+          textAlign: 'left'
+        }}>
+          <p style={{ fontWeight: '800', fontSize: '15px', color: '#333', margin: '0 0 10px' }}>
+            🌐 Si ya abriste en navegador:
+          </p>
+          <a
+            href={links.waMe}
+            style={{
+              display: 'block',
+              background: '#25d366',
+              color: '#fff',
+              fontWeight: '800',
+              fontSize: '17px',
+              padding: '15px',
+              borderRadius: '12px',
+              textDecoration: 'none',
+              textAlign: 'center',
+              boxShadow: '0 6px 18px rgba(37,211,102,0.45)'
+            }}
           >
-            Abrir con API (Recomendado para TikTok)
-          </button>
-        )}
+            💬 Abrir WhatsApp
+          </a>
+        </div>
 
-        <a 
-          href={links.apiUrl} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="block w-full rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-semibold py-3 px-4 mt-3 text-center transition-colors"
+        <p style={{ fontSize: '13px', color: '#aaa', margin: '0 0 12px' }}>
+          No te abre? Copia el numero y busca el contacto manualmente:
+        </p>
+
+        <div style={{
+          background: '#f5f5f5',
+          borderRadius: '12px',
+          padding: '14px',
+          marginBottom: '10px',
+          fontSize: '22px',
+          fontWeight: '800',
+          color: '#111',
+          letterSpacing: '2px'
+        }}>
+          +{phone}
+        </div>
+
+        <button
+          type="button"
+          onClick={copyNum}
+          style={{
+            width: '100%',
+            background: copiedNum ? '#e8f5e9' : '#f0fdf4',
+            border: '2px solid #25d366',
+            borderRadius: '12px',
+            padding: '12px',
+            fontWeight: '700',
+            fontSize: '15px',
+            color: '#075e54',
+            cursor: 'pointer',
+            marginBottom: '8px'
+          }}
         >
-          Abrir por navegador
-        </a>
-        
-        <button 
-          type="button" 
-          onClick={copyFallback}
-          className="block w-full rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-800 font-semibold py-3 px-4 mt-3 transition-colors"
-        >
-          {copied ? 'Enlace copiado ✅' : 'Copiar enlace'}
+          {copiedNum ? '✅ Numero copiado' : '📋 Copiar numero'}
         </button>
 
-        <div className="mt-5 rounded-xl bg-amber-50 border border-amber-300 p-3 text-left text-sm text-amber-900">
-          <p className="font-bold mb-1">📱 Si vienes desde TikTok</p>
-          <p className="mb-2">Usa el botón <span className="font-bold">&quot;Abrir con API&quot;</span> o el botón principal (funciona automáticamente).</p>
-          <ol className="list-decimal ml-5 space-y-1">
-            <li>Toca el botón verde o azul para abrir WhatsApp</li>
-            <li>Si no funciona, copia el enlace y pégalo en tu navegador</li>
-          </ol>
-        </div>
+        <button
+          type="button"
+          onClick={copyLink}
+          style={{
+            width: '100%',
+            background: '#f9f9f9',
+            border: '1px solid #ddd',
+            borderRadius: '12px',
+            padding: '12px',
+            fontWeight: '600',
+            fontSize: '14px',
+            color: '#555',
+            cursor: 'pointer'
+          }}
+        >
+          {copied ? '✅ Enlace copiado' : '🔗 Copiar enlace de WhatsApp'}
+        </button>
 
-        <div className="mt-4 text-xs text-slate-500">
-          <p>Número: +{phone}</p>
-          {isTikTok && <p className="text-green-600 font-bold">✓ Modo TikTok detectado</p>}
-        </div>
       </div>
     </main>
   )

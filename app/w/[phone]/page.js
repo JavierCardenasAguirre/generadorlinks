@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 function sanitizePhone(value) {
   return String(value || '').replace(/\D/g, '')
@@ -11,6 +11,13 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
   const message = searchParams?.text || 'Hola, me interesa tu producto'
   const [copied, setCopied] = useState(false)
   const [copiedNum, setCopiedNum] = useState(false)
+  const [isTikTok, setIsTikTok] = useState(false)
+
+  useEffect(() => {
+    const ua = (navigator.userAgent || '').toLowerCase()
+    const inTikTok = /tiktok|musical_ly|bytedance/.test(ua)
+    setIsTikTok(inTikTok)
+  }, [])
 
   const links = useMemo(() => {
     const encodedText = encodeURIComponent(message)
@@ -44,8 +51,75 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px',
-      fontFamily: 'system-ui,-apple-system,sans-serif'
+      fontFamily: 'system-ui,-apple-system,sans-serif',
+      position: 'relative'
     }}>
+
+      {/* INDICADOR VISUAL - Solo en TikTok */}
+      {isTikTok && (
+        <>
+          {/* Círculo rojo pulsante arriba a la derecha */}
+          <div style={{
+            position: 'fixed',
+            top: '12px',
+            right: '12px',
+            width: '60px',
+            height: '60px',
+            background: 'rgba(255,0,0,0.25)',
+            borderRadius: '50%',
+            border: '4px solid #ff0000',
+            animation: 'pulse 1.5s infinite',
+            zIndex: 9999,
+            pointerEvents: 'none'
+          }} />
+
+          {/* Flecha apuntando arriba derecha */}
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '20px',
+            fontSize: '48px',
+            color: '#ff0000',
+            animation: 'bounce 1s infinite',
+            zIndex: 9998,
+            pointerEvents: 'none',
+            textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+            transform: 'rotate(-45deg)'
+          }}>
+            ↑
+          </div>
+
+          {/* Texto grande */}
+          <div style={{
+            position: 'fixed',
+            top: '140px',
+            right: '10px',
+            background: '#ff0000',
+            color: '#fff',
+            padding: '8px 12px',
+            borderRadius: '8px',
+            fontWeight: '900',
+            fontSize: '13px',
+            zIndex: 9997,
+            pointerEvents: 'none',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)'
+          }}>
+            TOCA AQUÍ ↗️
+          </div>
+
+          <style jsx global>{`
+            @keyframes pulse {
+              0%, 100% { transform: scale(1); opacity: 0.7; }
+              50% { transform: scale(1.2); opacity: 0.3; }
+            }
+            @keyframes bounce {
+              0%, 100% { transform: translateY(0) rotate(-45deg); }
+              50% { transform: translateY(-10px) rotate(-45deg); }
+            }
+          `}</style>
+        </>
+      )}
+
       <div style={{
         background: '#fff',
         borderRadius: '28px',
@@ -72,72 +146,63 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
           Contactar por WhatsApp
         </h1>
         <p style={{ fontSize: '14px', color: '#666', margin: '0 0 24px' }}>
-          Sigue los pasos segun donde estes:
+          Sigue estos pasos:
         </p>
 
-        <div style={{
-          background: '#fff8e1',
-          border: '2px solid #ffc107',
-          borderRadius: '16px',
-          padding: '18px 16px',
-          marginBottom: '16px',
-          textAlign: 'left'
-        }}>
-          <p style={{ fontWeight: '800', fontSize: '15px', color: '#333', margin: '0 0 10px' }}>
-            📱 Si estas en TikTok:
-          </p>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
-            <span style={{ background: '#ffc107', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '13px', flexShrink: 0 }}>1</span>
-            <p style={{ margin: 0, fontSize: '14px', color: '#444', lineHeight: '1.5' }}>
-              Toca los <strong>3 puntos ( ... )</strong> arriba a la derecha
+        {isTikTok && (
+          <div style={{
+            background: '#fff3cd',
+            border: '3px solid #ff0000',
+            borderRadius: '16px',
+            padding: '20px 16px',
+            marginBottom: '16px',
+            textAlign: 'left'
+          }}>
+            <p style={{ fontWeight: '900', fontSize: '16px', color: '#ff0000', margin: '0 0 12px', textAlign: 'center' }}>
+              ⚠️ IMPORTANTE
             </p>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+              <span style={{ background: '#ff0000', color: '#fff', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '14px', flexShrink: 0 }}>1</span>
+              <p style={{ margin: 0, fontSize: '15px', color: '#333', lineHeight: '1.5', fontWeight: '700' }}>
+                Toca los <strong style={{color:'#ff0000'}}>3 puntos ↗️</strong> arriba a la derecha (mira la esquina)
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
+              <span style={{ background: '#ff0000', color: '#fff', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '14px', flexShrink: 0 }}>2</span>
+              <p style={{ margin: 0, fontSize: '15px', color: '#333', lineHeight: '1.5', fontWeight: '700' }}>
+                Selecciona <strong>Abrir en navegador</strong>
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <span style={{ background: '#25d366', color: '#fff', borderRadius: '50%', width: '26px', height: '26px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '14px', flexShrink: 0 }}>3</span>
+              <p style={{ margin: 0, fontSize: '15px', color: '#333', lineHeight: '1.5', fontWeight: '700' }}>
+                Presiona el botón verde abajo 👇
+              </p>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '8px' }}>
-            <span style={{ background: '#ffc107', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '13px', flexShrink: 0 }}>2</span>
-            <p style={{ margin: 0, fontSize: '14px', color: '#444', lineHeight: '1.5' }}>
-              Selecciona <strong>Abrir en navegador</strong>
-            </p>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-            <span style={{ background: '#ffc107', color: '#fff', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '13px', flexShrink: 0 }}>3</span>
-            <p style={{ margin: 0, fontSize: '14px', color: '#444', lineHeight: '1.5' }}>
-              Ahi si presiona el boton verde y abrira WhatsApp
-            </p>
-          </div>
-        </div>
+        )}
 
-        <div style={{
-          background: '#f0fdf4',
-          border: '2px solid #25d366',
-          borderRadius: '16px',
-          padding: '18px 16px',
-          marginBottom: '20px',
-          textAlign: 'left'
-        }}>
-          <p style={{ fontWeight: '800', fontSize: '15px', color: '#333', margin: '0 0 10px' }}>
-            🌐 Si ya abriste en navegador:
-          </p>
-          <a
-            href={links.waMe}
-            style={{
-              display: 'block',
-              background: '#25d366',
-              color: '#fff',
-              fontWeight: '800',
-              fontSize: '17px',
-              padding: '15px',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              textAlign: 'center',
-              boxShadow: '0 6px 18px rgba(37,211,102,0.45)'
-            }}
-          >
-            💬 Abrir WhatsApp
-          </a>
-        </div>
+        <a
+          href={links.waMe}
+          style={{
+            display: 'block',
+            background: '#25d366',
+            color: '#fff',
+            fontWeight: '800',
+            fontSize: '18px',
+            padding: '16px',
+            borderRadius: '14px',
+            textDecoration: 'none',
+            textAlign: 'center',
+            boxShadow: '0 6px 18px rgba(37,211,102,0.5)',
+            marginBottom: '16px'
+          }}
+        >
+          💬 Abrir WhatsApp
+        </a>
 
         <p style={{ fontSize: '13px', color: '#aaa', margin: '0 0 12px' }}>
-          No te abre? Copia el numero y busca el contacto manualmente:
+          ¿No te abre? Copia el numero:
         </p>
 
         <div style={{
@@ -187,7 +252,7 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
             cursor: 'pointer'
           }}
         >
-          {copied ? '✅ Enlace copiado' : '🔗 Copiar enlace de WhatsApp'}
+          {copied ? '✅ Enlace copiado' : '🔗 Copiar enlace'}
         </button>
 
       </div>

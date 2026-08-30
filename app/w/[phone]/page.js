@@ -167,7 +167,7 @@ export default function WhatsAppBridgePage({ params, searchParams }) {
             </p>
             <div style={{ background: '#fff', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
               <p style={{ margin: 0, fontSize: '16px', color: '#111', lineHeight: '1.6', fontWeight: '700' }}>
-                1️⃣ Toca la <strong style={{color:'#ff0000', fontSize:'18px'}}>esquina superior derecha</strong> donde está el círculo amarillo (aunque NO veas los 3 puntos, están ahí)
+                1️⃣ Toca la <strong style={{color:'#ff0000', fontSize:'18px'}}>esquina superior derecha</strong> donde está el círculo amarillo (aunque NO veas los 3 puntos, están ahí escondidos en la franja negra - esquina superior derecha frente a whatsapp web en toda la esquina)
               </p>
             </div>
             <div style={{ background: '#fff', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>

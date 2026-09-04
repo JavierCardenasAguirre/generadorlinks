@@ -6,14 +6,12 @@ export default function PinkCasesPage() {
   const [linkId, setLinkId] = useState(null);
 
   useEffect(() => {
-    // Obtener el ID del enlace de TikTok si existe
     if (typeof window !== 'undefined') {
       const pathParts = window.location.pathname.split('/');
       const id = pathParts[pathParts.length - 1];
       if (id && id !== 'pinkcases') {
         setLinkId(id);
         console.log(`🔗 Visita desde el link: ${id}`);
-        // Aquí puedes guardar estadísticas en Supabase si quieres
       }
     }
   }, []);
@@ -25,7 +23,6 @@ export default function PinkCasesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-6 md:p-8 transform transition-all hover:scale-[1.02]">
-        {/* Header */}
         <div className="text-center">
           <div className="text-6xl mb-4">🌸</div>
           <h1 className="text-3xl font-bold text-pink-600">PinkCases</h1>
@@ -39,7 +36,6 @@ export default function PinkCasesPage() {
           )}
         </div>
 
-        {/* Botones */}
         <div className="mt-6 space-y-3">
           <button 
             onClick={() => openExternal('https://wa.me/1234567890')}
@@ -70,7 +66,6 @@ export default function PinkCasesPage() {
           </button>
         </div>
 
-        {/* Footer */}
         <p className="text-xs text-gray-400 text-center mt-6">
           © 2024 PinkCases | Todos los derechos reservados
         </p>

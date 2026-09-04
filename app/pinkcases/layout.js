@@ -4,7 +4,10 @@ export const metadata = {
   openGraph: {
     title: 'PinkCases - Carcasas Premium para iPhone',
     description: 'Carcasas premium para iPhone | Diseños únicos y protección total | Envíos a toda Colombia',
-    images: ['https://www.linksweb.lat/og-image.jpg'],
+    url: 'https://www.linksweb.lat/pinkcases',
+    siteName: 'PinkCases',
+    locale: 'es_CO',
+    type: 'website',
   },
 };
 

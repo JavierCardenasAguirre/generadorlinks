@@ -17,7 +17,16 @@ const nextConfig = {
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'images.unsplash.com' }
     ]
-  }
+  },
+  // 🔥 NUEVA SECCIÓN: Rewrites para TikTok
+  async rewrites() {
+    return [
+      {
+        source: '/r/:id',
+        destination: '/pinkcases',
+      },
+    ];
+  },
 }
 
 module.exports = nextConfig

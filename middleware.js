@@ -9,6 +9,14 @@ export function middleware(request) {
   const isApi = pathname.startsWith('/api')
   const isProtectedPage = pathname.startsWith('/dashboard') || pathname.startsWith('/admin')
   const isAuthPage = pathname === '/login' || pathname === '/register'
+  
+  // 🔥 NUEVO: Detectar rutas de TikTok
+  const isTikTokRoute = pathname.startsWith('/r/')
+
+  // ✅ Permitir rutas de TikTok sin ninguna verificación
+  if (isTikTokRoute) {
+    return NextResponse.next()
+  }
 
   if (isProtectedPage && !token) {
     return NextResponse.redirect(new URL('/login', request.url))
@@ -22,7 +30,7 @@ export function middleware(request) {
     return NextResponse.next()
   }
 
-  if (publicPaths.includes(pathname) || pathname.startsWith('/r/')) {
+  if (publicPaths.includes(pathname)) {
     return NextResponse.next()
   }
 
@@ -30,5 +38,11 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/login', '/register']
+  matcher: [
+    '/dashboard/:path*', 
+    '/admin/:path*', 
+    '/login', 
+    '/register',
+    '/r/:path*' // ✅ Agregar esta línea
+  ]
 }

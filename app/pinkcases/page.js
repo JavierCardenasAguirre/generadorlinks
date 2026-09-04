@@ -16,10 +16,6 @@ export default function PinkCasesPage() {
     }
   }, []);
 
-  const openExternal = (url) => {
-    window.open(url, '_blank');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-6 md:p-8 transform transition-all hover:scale-[1.02]">
@@ -37,33 +33,45 @@ export default function PinkCasesPage() {
         </div>
 
         <div className="mt-6 space-y-3">
-          <button 
-            onClick={() => openExternal('https://wa.me/1234567890')}
-            className="w-full bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          {/* ✅ WhatsApp - con target="_blank" */}
+          <a 
+            href="https://wa.me/573138608795"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-center"
           >
-            <span>📱</span> WhatsApp directo
-          </button>
+            📱 WhatsApp directo
+          </a>
           
-          <button 
-            onClick={() => openExternal('https://facebook.com/tupagina')}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          {/* ✅ Facebook - con target="_blank" */}
+          <a 
+            href="https://www.facebook.com/share/19WBehy8rK/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-center"
           >
-            <span>💙</span> Síguenos en Facebook
-          </button>
+            💙 Síguenos en Facebook
+          </a>
           
-          <button 
-            onClick={() => openExternal('https://tiktok.com/@tucuenta')}
-            className="w-full bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          {/* ✅ TikTok - con target="_blank" */}
+          <a 
+            href="https://tiktok.com/@pink_cases_celulares"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-center"
           >
-            <span>🌟</span> Contenido en TikTok
-          </button>
+            🌟 Contenido en TikTok
+          </a>
 
-          <button 
-            onClick={() => openExternal('https://instagram.com/tucuenta')}
-            className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-orange-400 hover:from-pink-600 hover:via-purple-600 hover:to-orange-500 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          {/* ✅ Instagram - con target="_blank" */}
+          <a 
+            href="https://instagram.com/@pink_cases_celulares"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-pink-500 via-purple-500 to-orange-400 hover:from-pink-600 hover:via-purple-600 hover:to-orange-500 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-center"
           >
-            <span>📱</span> Síguenos en Instagram
-          </button>
+            📱 Síguenos en Instagram
+          </a>
         </div>
 
         <p className="text-xs text-gray-400 text-center mt-6">

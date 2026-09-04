@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 
 export default function PinkCasesPage() {
   const [linkId, setLinkId] = useState(null);
-  const [isTikTok, setIsTikTok] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -14,33 +13,13 @@ export default function PinkCasesPage() {
         setLinkId(id);
         console.log(`🔗 Visita desde el link: ${id}`);
       }
-      
-      // Detectar si estamos en TikTok
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      if (/tiktok/i.test(userAgent)) {
-        setIsTikTok(true);
-        console.log('📱 Usuario en TikTok detectado');
-      }
     }
   }, []);
 
-  // 🔥 Función que intenta abrir la APP directamente
-  const openApp = (appUrl, webUrl) => {
-    if (isTikTok) {
-      // En TikTok: intentar abrir la app primero
-      const appWindow = window.open(appUrl, '_blank');
-      
-      // Si no se abre la app, redirigir a la web después de 1.5 segundos
-      setTimeout(() => {
-        if (appWindow) {
-          appWindow.close();
-        }
-        window.location.href = webUrl;
-      }, 1500);
-    } else {
-      // Fuera de TikTok: abrir en nueva pestaña normalmente
-      window.open(webUrl, '_blank');
-    }
+  // 🔥 Función universal para abrir enlaces
+  const openLink = (url) => {
+    // Intentar abrir en nueva pestaña
+    window.open(url, '_blank');
   };
 
   return (
@@ -57,53 +36,44 @@ export default function PinkCasesPage() {
               🔗 ID: {linkId}
             </p>
           )}
-          {isTikTok && (
-            <p className="text-xs text-blue-500 mt-2">
-              📱 Abriendo enlaces directamente en las apps...
-            </p>
-          )}
         </div>
 
         <div className="mt-6 space-y-3">
-          {/* 🔥 WhatsApp - Deep Link primero, web como fallback */}
+          {/* WhatsApp */}
           <button 
-            onClick={() => openApp(
-              'whatsapp://send?phone=573138608795',
-              'https://wa.me/573138608795'
-            )}
+            onClick={() => openLink('https://wa.me/573138608795')}
             className="w-full bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>📱</span> WhatsApp directo
           </button>
           
-          {/* 🔥 Facebook - Deep Link primero, web como fallback */}
+          {/* Facebook */}
           <button 
-            onClick={() => openApp(
-              'fb://profile/61572968497191',
-              'https://www.facebook.com/share/19WBehy8rK/'
-            )}
+            onClick={() => openLink('https://www.facebook.com/profile.php?id=61572968497191')}
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>💙</span> Síguenos en Facebook
           </button>
           
-          {/* 🔥 TikTok - Deep Link primero, web como fallback */}
+          {/* TikTok */}
           <button 
-            onClick={() => openApp(
-              'tiktok://user?username=pink_cases_celulares',
-              'https://tiktok.com/@pink_cases_celulares'
-            )}
+            onClick={() => openLink('https://www.tiktok.com/@pink_cases_celulares')}
             className="w-full bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>🌟</span> Contenido en TikTok
           </button>
 
-          {/* 🔥 Instagram - Deep Link primero, web como fallback */}
+          {/* 🔥 NUEVO: Página Web */}
           <button 
-            onClick={() => openApp(
-              'instagram://user?username=pink_cases_celulares',
-              'https://instagram.com/pink_cases_celulares'
-            )}
+            onClick={() => openLink('https://www.pink-cases.com/?utm_source=tiktok&utm_medium=social&utm_campaign=pinkcases_link')}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <span>🌐</span> Visita nuestra web
+          </button>
+
+          {/* Instagram */}
+          <button 
+            onClick={() => openLink('https://www.instagram.com/@pink_cases_celulares')}
             className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-orange-400 hover:from-pink-600 hover:via-purple-600 hover:to-orange-500 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>📱</span> Síguenos en Instagram

@@ -16,10 +16,18 @@ export default function PinkCasesPage() {
     }
   }, []);
 
-  // 🔥 Función universal para abrir enlaces
-  const openLink = (url) => {
-    // Intentar abrir en nueva pestaña
-    window.open(url, '_blank');
+  // 🔥 Función que intenta abrir deep link o fallback a web
+  const openLink = (deepLink, webUrl) => {
+    // Intentar abrir el deep link primero
+    const win = window.open(deepLink, '_blank');
+    
+    // Si no se abre, redirigir a la web después de 1.5 segundos
+    setTimeout(() => {
+      if (win) {
+        win.close();
+      }
+      window.location.href = webUrl;
+    }, 1500);
   };
 
   return (
@@ -39,41 +47,55 @@ export default function PinkCasesPage() {
         </div>
 
         <div className="mt-6 space-y-3">
-          {/* WhatsApp */}
+          {/* 🔥 Deep Link: WhatsApp */}
           <button 
-            onClick={() => openLink('https://wa.me/573138608795')}
+            onClick={() => openLink(
+              'whatsapp://send?phone=573138608795',
+              'https://wa.me/573138608795'
+            )}
             className="w-full bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>📱</span> WhatsApp directo
           </button>
           
-          {/* Facebook */}
+          {/* 🔥 Deep Link: Facebook */}
           <button 
-            onClick={() => openLink('https://www.facebook.com/profile.php?id=61572968497191')}
+            onClick={() => openLink(
+              'fb://profile/61572968497191',
+              'https://www.facebook.com/profile.php?id=61572968497191'
+            )}
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>💙</span> Síguenos en Facebook
           </button>
           
-          {/* TikTok */}
+          {/* 🔥 Deep Link: TikTok */}
           <button 
-            onClick={() => openLink('https://www.tiktok.com/@pink_cases_celulares')}
+            onClick={() => openLink(
+              'tiktok://user?username=pink_cases_celulares',
+              'https://www.tiktok.com/@pink_cases_celulares'
+            )}
             className="w-full bg-gradient-to-r from-black to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>🌟</span> Contenido en TikTok
           </button>
 
-          {/* 🔥 NUEVO: Página Web */}
-          <button 
-            onClick={() => openLink('https://www.pink-cases.com/?utm_source=tiktok&utm_medium=social&utm_campaign=pinkcases_link')}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          {/* 🔥 URL Universal: Página Web (no necesita deep link) */}
+          <a 
+            href="https://www.pink-cases.com/?utm_source=tiktok&utm_medium=social&utm_campaign=pinkcases_link"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg text-center"
           >
             <span>🌐</span> Visita nuestra web
-          </button>
+          </a>
 
-          {/* Instagram */}
+          {/* 🔥 Deep Link: Instagram */}
           <button 
-            onClick={() => openLink('https://www.instagram.com/@pink_cases_celulares')}
+            onClick={() => openLink(
+              'instagram://user?username=pink_cases_celulares',
+              'https://www.instagram.com/pink_cases_celulares'
+            )}
             className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-orange-400 hover:from-pink-600 hover:via-purple-600 hover:to-orange-500 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>📱</span> Síguenos en Instagram

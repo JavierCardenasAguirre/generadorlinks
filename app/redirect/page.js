@@ -26,7 +26,7 @@ function RedirectContent() {
         name: 'TikTok'
       },
       facebook: {
-        url: 'https://www.facebook.com/profile.php?id=61572968497191',
+        url: 'https://www.facebook.com/profile.php?id=100065142186668',
         name: 'Facebook'
       },
       web: {

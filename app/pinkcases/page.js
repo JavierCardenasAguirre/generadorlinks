@@ -61,8 +61,8 @@ export default function PinkCasesPage() {
           {/* 🔥 Deep Link: Facebook */}
           <button 
             onClick={() => openLink(
-              'fb://profile/61572968497191',
-              'https://m.facebook.com/100065142186668'
+              'fb://profile/100065142186668',
+              'https://www.facebook.com/profile.php?id=100065142186668'
             )}
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >

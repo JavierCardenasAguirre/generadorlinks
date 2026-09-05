@@ -18,10 +18,7 @@ export default function PinkCasesPage() {
 
   // 🔥 Función que intenta abrir deep link o fallback a web
   const openLink = (deepLink, webUrl) => {
-    // Intentar abrir el deep link primero
     const win = window.open(deepLink, '_blank');
-    
-    // Si no se abre, redirigir a la web después de 1.5 segundos
     setTimeout(() => {
       if (win) {
         win.close();
@@ -47,7 +44,7 @@ export default function PinkCasesPage() {
         </div>
 
         <div className="mt-6 space-y-3">
-          {/* 🔥 Deep Link: WhatsApp */}
+          {/* WhatsApp */}
           <button 
             onClick={() => openLink(
               'whatsapp://send?phone=573138608795',
@@ -58,18 +55,18 @@ export default function PinkCasesPage() {
             <span>📱</span> WhatsApp directo
           </button>
           
-          {/* 🔥 Deep Link: Facebook */}
+          {/* 🔥 FACEBOOK CORREGIDO */}
           <button 
             onClick={() => openLink(
-              'fb://profile/100065142186668',
-              'https://mbasic.facebook.com/100065142186668'
+              'fb://profile/100065142186668',  // Deep link sin parámetros
+              'https://mbasic.facebook.com/100065142186668'  // ✅ Usando mbasic
             )}
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <span>💙</span> Síguenos en Facebook
           </button>
           
-          {/* 🔥 Deep Link: TikTok */}
+          {/* TikTok */}
           <button 
             onClick={() => openLink(
               'tiktok://user?username=pink_cases_celulares',
@@ -80,7 +77,7 @@ export default function PinkCasesPage() {
             <span>🌟</span> Contenido en TikTok
           </button>
 
-          {/* 🔥 URL Universal: Página Web (no necesita deep link) */}
+          {/* Página Web */}
           <a 
             href="https://www.pink-cases.com/?utm_source=tiktok&utm_medium=social&utm_campaign=pinkcases_link"
             target="_blank"
@@ -90,7 +87,7 @@ export default function PinkCasesPage() {
             <span>🌐</span> Visita nuestra web
           </a>
 
-          {/* 🔥 Deep Link: Instagram */}
+          {/* Instagram */}
           <button 
             onClick={() => openLink(
               'instagram://user?username=pink_cases_celulares',

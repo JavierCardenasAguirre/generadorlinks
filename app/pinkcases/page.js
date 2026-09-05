@@ -27,15 +27,24 @@ export default function PinkCasesPage() {
     }, 2000);
   };
 
-  // Función específica para Facebook
+  // 🔥 Función específica para Facebook (optimizada)
   const openFacebook = () => {
-    const win = window.open('fb://profile/100065142186668', '_blank');
-    setTimeout(() => {
-      if (win) {
-        win.close();
-      }
-      window.location.href = 'https://mbasic.facebook.com/100065142186668';
-    }, 2000);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // En móvil: intentar abrir la app
+      const win = window.open('fb://profile/100065142186668', '_blank');
+      setTimeout(() => {
+        if (win) {
+          win.close();
+        }
+        // Si no tiene la app, ir a la web (pedirá login)
+        window.location.href = 'https://www.facebook.com/100065142186668';
+      }, 2000);
+    } else {
+      // En escritorio: ir directamente a la web
+      window.open('https://www.facebook.com/100065142186668', '_blank');
+    }
   };
 
   return (
@@ -55,7 +64,7 @@ export default function PinkCasesPage() {
         </div>
 
         <div className="mt-6 space-y-3">
-          {/* Botón de WhatsApp */}
+          {/* WhatsApp */}
           <button 
             onClick={() => openLink(
               'whatsapp://send?phone=573138608795',
@@ -66,7 +75,7 @@ export default function PinkCasesPage() {
             <span>📱</span> WhatsApp directo
           </button>
           
-          {/* Botón de Facebook */}
+          {/* 🔥 Facebook - Optimizado */}
           <button 
             onClick={openFacebook}
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
@@ -74,7 +83,7 @@ export default function PinkCasesPage() {
             <span>💙</span> Síguenos en Facebook
           </button>
           
-          {/* Botón de TikTok */}
+          {/* TikTok */}
           <button 
             onClick={() => openLink(
               'tiktok://user?username=pink_cases_celulares',
@@ -85,7 +94,7 @@ export default function PinkCasesPage() {
             <span>🌟</span> Contenido en TikTok
           </button>
 
-          {/* Botón de Página Web */}
+          {/* Página Web */}
           <a 
             href="https://www.pink-cases.com/?utm_source=tiktok&utm_medium=social&utm_campaign=pinkcases_link"
             target="_blank"
@@ -95,7 +104,7 @@ export default function PinkCasesPage() {
             <span>🌐</span> Visita nuestra web
           </a>
 
-          {/* Botón de Instagram */}
+          {/* Instagram */}
           <button 
             onClick={() => openLink(
               'instagram://user?username=pink_cases_celulares',
